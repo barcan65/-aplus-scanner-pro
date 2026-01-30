@@ -2,6 +2,8 @@
 
 Professional stock screening tool with real-time data from Polygon.io. Includes freemium monetization model.
 
+🌐 **[Live App: https://aplus-scanner-pro.netlify.app/](https://aplus-scanner-pro.netlify.app/)**
+
 ## Features
 
 ### 📊 Screening Capabilities
