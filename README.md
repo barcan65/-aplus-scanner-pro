@@ -154,6 +154,6 @@ For issues:
 
 ---
 
-**Created by ChartScript AI LLC**  
+**Created by THE COVENANT BRIDGE FINANCIAL GROUP LLC**  
 Rev. Barry Cannon, MSN, RN, PMP, ITIL v4
 
