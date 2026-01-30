@@ -636,8 +636,17 @@
         </div>
 
         <footer>
-            <strong>ChartScript AI LLC</strong> | Professional Edition with Polygon.io<br>
-            Rev. Barry Cannon, MSN, RN, PMP, ITIL v4 | Real-time pre-market + regular hours scanning
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+                <div>
+                    <strong>ChartScript AI LLC</strong> | Professional Edition with Polygon.io<br>
+                    Rev. Barry Cannon, MSN, RN, PMP, ITIL v4
+                </div>
+                <div style="text-align:right;">
+                    <a href="privacy.html" style="color: #fff; text-decoration: underline; margin-right:10px;">Privacy Policy</a>
+                    <a href="terms.html" style="color: #fff; text-decoration: underline; margin-right:10px;">Terms of Service</a>
+                    <a href="mailto:support@aplusscanner.com" style="color: #fff; text-decoration: underline;">support@aplusscanner.com</a>
+                </div>
+            </div>
         </footer>
     </div>
 
@@ -707,6 +716,11 @@
 
         // Freemium state
         let isPremium = false;
+
+        // Payment link placeholders (replace with your Stripe Payment Link URLs)
+        // Example: PAYMENT_LINK_MONTHLY = 'https://buy.stripe.com/test_XXXX'
+        const PAYMENT_LINK_MONTHLY = '';
+        const PAYMENT_LINK_YEARLY = '';
 
         // Stock universe
         const STOCK_UNIVERSE = [
@@ -801,13 +815,20 @@
         }
 
         function initializePayment(plan) {
-            // For demo: simulate payment with 7-day trial
-            alert(`🎉 Welcome to A+ Scanner Pro!\n\nFor this demo, you've been granted a 7-day free trial.\n\nIn production, this would redirect to Stripe checkout for ${plan === 'monthly' ? '$29/month' : '$299/year'}.`);
-            
+            // If payment links are configured, open them (Stripe Payment Links)
+            const link = plan === 'monthly' ? PAYMENT_LINK_MONTHLY : PAYMENT_LINK_YEARLY;
+            if (link && link.startsWith('http')) {
+                window.open(link, '_blank');
+                return;
+            }
+
+            // Fallback/demo: simulate payment with 7-day trial
+            alert(`🎉 Welcome to A+ Scanner Pro!\n\nFor this demo, you've been granted a 7-day free trial.\n\nIn production, set PAYMENT_LINK_MONTHLY/YEARLY in the HTML to your Stripe Payment Links.`);
+
             const expiryDate = new Date();
             expiryDate.setDate(expiryDate.getDate() + 7);
             localStorage.setItem('premiumExpiry', expiryDate.toISOString());
-            
+
             updatePremiumUI();
             closePricingModal();
         }

@@ -78,9 +78,20 @@ CONFIG.proMaxStocks = 100;     // Or this
 Replace the `initializePayment()` function with Stripe redirect:
 ```javascript
 function initializePayment(plan) {
-    window.location.href = 'https://checkout.stripe.com/pay/YOUR_PRICE_ID';
 }
 ```
+Alternatively, use Stripe Payment Links (no server-side code required):
+
+- Create Payment Links in your Stripe Dashboard for monthly and yearly plans
+- Set `PAYMENT_LINK_MONTHLY` and `PAYMENT_LINK_YEARLY` constants in `aplus-polygon-scanner.html`
+
+Example (in `aplus-polygon-scanner.html`):
+```javascript
+const PAYMENT_LINK_MONTHLY = 'https://buy.stripe.com/test_xxx';
+const PAYMENT_LINK_YEARLY = 'https://buy.stripe.com/test_yyy';
+```
+
+The app will open a Payment Link in a new tab; if no links are set, the app falls back to a 7-day demo trial.
 
 ### Email for Support
 Update footer with your email:
