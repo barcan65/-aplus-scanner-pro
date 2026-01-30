@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A+ Scanner Pro | Polygon.io Edition</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #fff;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+
+        .api-status {
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin: 10px 0;
+        }
+
+        .api-connected {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .api-disconnected {
+            background: #f44336;
+            color: white;
+        }
+
+        .criteria-box {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 0.95em;
+        }
+
+        .criteria-box strong {
+            color: #4CAF50;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .api-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .api-input-group label {
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .api-input-group input {
+            padding: 10px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 6px;
+            background: rgba(255,255,255,0.9);
+            font-size: 14px;
+            font-family: monospace;
+        }
+
+        .auto-refresh-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #4CAF50;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-primary:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-export {
+            background: #2196F3;
+            color: white;
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+
+        .btn-export:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+
+        .status {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .status.scanning {
+            background: rgba(255, 193, 7, 0.3);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .results-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .results-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #1e3c72;
+        }
+
+        .results-count {
+            font-size: 1.2em;
+            color: #4CAF50;
+            font-weight: 600;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        thead {
+            background: #1e3c72;
+            color: white;
+        }
+
+        th {
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #333;
+            font-size: 0.95em;
+        }
+
+        tbody tr:hover {
+            background: #f5f5f5;
+        }
+
+        .positive {
+            color: #4CAF50;
+            font-weight: 600;
+        }
+
+        .negative {
+            color: #f44336;
+            font-weight: 600;
+        }
+
+        .symbol {
+            font-weight: 700;
+            font-size: 1.1em;
+            color: #1e3c72;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .badge-green {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .badge-blue {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .badge-orange {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .badge-gray {
+            background: #f5f5f5;
+            color: #616161;
+        }
+
+        .pm-indicator {
+            background: #FFD700;
+            color: #1e3c72;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 0.75em;
+            font-weight: 700;
+        }
+
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #4CAF50;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: rgba(244, 67, 54, 0.2);
+            border-left: 4px solid #f44336;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            color: #d32f2f;
+            font-weight: 600;
+        }
+
+        .info-message {
+            background: rgba(33, 150, 243, 0.2);
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            color: #1565C0;
+            font-weight: 600;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .timestamp {
+            text-align: center;
+            margin-top: 15px;
+            opacity: 0.7;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            opacity: 0.8;
+            font-size: 0.9em;
+        }
+
+        .premium-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #1e3c72;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 700;
+            margin-left: 10px;
+        }
+
+        .tier-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tier-info {
+            color: white;
+            font-weight: 600;
+        }
+
+        .upgrade-btn {
+            background: #FFD700;
+            color: #1e3c72;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upgrade-btn:hover {
+            background: #FFA500;
+            transform: scale(1.05);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #1e3c72;
+            margin-bottom: 15px;
+        }
+
+        .modal-close {
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        .modal-close:hover {
+            color: #000;
+        }
+
+        .pricing-comparison {
+            margin: 20px 0;
+            color: #333;
+        }
+
+        .pricing-comparison ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .pricing-comparison li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .pricing-comparison li.free {
+            color: #666;
+        }
+
+        .pricing-comparison li.pro {
+            font-weight: 600;
+            color: #4CAF50;
+        }
+
+        .payment-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .payment-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .limited-notice {
+            background: rgba(255, 193, 7, 0.2);
+            border-left: 4px solid #FFC107;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            color: #F57F17;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+
+            table {
+                font-size: 0.8em;
+            }
+
+            th, td {
+                padding: 8px 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚡ A+ Scanner Pro <span id="tierBadge"></span></h1>
+            <div class="subtitle">Powered by Polygon.io | Pre-Market + Regular Hours</div>
+            <div class="api-status" id="apiStatus">
+                <span id="apiStatusText">API Not Connected</span>
+            </div>
+            <div class="criteria-box">
+                <strong>Screening Criteria:</strong> Market Cap > $10B | Avg Volume > 5M shares | Price > $5 | Price > VWAP | RSI 50-70<br>
+                <strong>Float Analysis:</strong> Mega (>500M) | High (100-500M) | Medium (20-100M) | Low (5-20M) | Nano (<5M)<br>
+                <strong>Trading Hours:</strong> Pre-Market (4:00-9:30 AM ET) + Regular Hours (9:30 AM-4:00 PM ET)
+            </div>
+        </header>
+
+        <div id="tierBanner" class="tier-banner" style="display: none;">
+            <div class="tier-info">
+                <span id="tierText">📊 FREE TIER: Limited to 20 stocks</span>
+            </div>
+            <button class="upgrade-btn" onclick="openPricingModal()">✨ Upgrade to Pro</button>
+        </div>
+
+        <div class="controls">
+            <div class="api-input-group">
+                <label for="apiKeyInput">🔑 Polygon.io API Key:</label>
+                <input type="password" id="apiKeyInput" placeholder="Enter your Polygon.io API key" />
+            </div>
+
+            <button id="scanBtn" class="btn btn-primary" disabled>▶ Run Scan</button>
+            <button id="clearBtn" class="btn btn-secondary">Clear Results</button>
+
+            <div class="auto-refresh-toggle">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="autoRefreshToggle">
+                    <span class="toggle-slider"></span>
+                </label>
+                <span>Auto-Refresh</span>
+            </div>
+
+            <button id="exportBtn" class="btn-export" disabled>📊 Export</button>
+            
+            <div id="status" class="status">Enter API key to begin</div>
+        </div>
+
+        <div class="results-container">
+            <div class="results-header">
+                <div class="results-title">Scan Results</div>
+                <div class="results-count" id="resultsCount">0 stocks found</div>
+            </div>
+
+            <div id="errorContainer"></div>
+            <div id="loadingContainer"></div>
+            
+            <table id="resultsTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Price</th>
+                        <th>Change %</th>
+                        <th>Gap %</th>
+                        <th>Volume</th>
+                        <th>Avg Vol</th>
+                        <th>Market Cap</th>
+                        <th>Float</th>
+                        <th>Float Type</th>
+                        <th>RSI</th>
+                        <th>VWAP</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsBody">
+                </tbody>
+            </table>
+
+            <div id="noResults" class="no-results" style="display: none;">
+                No stocks currently meet the A+ criteria. Adjust filters or try during different market hours.
+            </div>
+
+            <div class="timestamp" id="timestamp"></div>
+        </div>
+
+        <footer>
+            <strong>ChartScript AI LLC</strong> | Professional Edition with Polygon.io<br>
+            Rev. Barry Cannon, MSN, RN, PMP, ITIL v4 | Real-time pre-market + regular hours scanning
+        </footer>
+    </div>
+
+    <!-- Pricing Modal -->
+    <div id="pricingModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closePricingModal()">&times;</span>
+            <div class="modal-header">🚀 Upgrade to Pro</div>
+            
+            <div class="pricing-comparison">
+                <strong style="font-size: 1.1em; color: #1e3c72;">Feature Comparison:</strong>
+                <ul>
+                    <li class="free">📊 Free: Up to 20 stocks per scan</li>
+                    <li class="pro">✓ Pro: All 100+ stocks in universe</li>
+                    
+                    <li class="free">📤 Free: No export</li>
+                    <li class="pro">✓ Pro: Export to CSV / TradeZella</li>
+                    
+                    <li class="free">🔄 Free: Manual scans only</li>
+                    <li class="pro">✓ Pro: Auto-refresh every 5 minutes</li>
+                    
+                    <li class="free">📈 Free: Basic metrics only</li>
+                    <li class="pro">✓ Pro: Advanced RSI/VWAP analysis</li>
+                    
+                    <li class="free">🌅 Free: Regular hours only</li>
+                    <li class="pro">✓ Pro: Pre-market + Regular hours</li>
+                </ul>
+            </div>
+
+            <div style="text-align: center; margin: 20px 0; border-top: 1px solid #eee; padding-top: 20px;">
+                <div style="font-size: 0.9em; color: #666; margin-bottom: 10px;">
+                    <strong>Pro Subscription</strong>
+                </div>
+                <div style="font-size: 2.5em; color: #1e3c72; font-weight: 700; margin: 10px 0;">
+                    $29<span style="font-size: 0.5em;">/month</span>
+                </div>
+                <div style="color: #666; font-size: 0.9em; margin-bottom: 20px;">
+                    or $299/year (save $49)
+                </div>
+            </div>
+
+            <button class="payment-btn" onclick="initializePayment('monthly')">
+                💳 Subscribe Monthly ($29)
+            </button>
+            <button class="payment-btn" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); margin-top: 10px;" onclick="initializePayment('yearly')">
+                💳 Subscribe Yearly ($299)
+            </button>
+
+            <div style="text-align: center; margin-top: 15px; font-size: 0.85em; color: #999;">
+                <p>💳 Secure Stripe payment | Free 7-day trial available</p>
+                <p style="margin-top: 5px;">Questions? Email: support@aplusscanner.com</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const CONFIG = {
+            marketCapMin: 10000000000, // $10B
+            avgVolumeMin: 5000000, // 5M shares
+            priceMin: 5,
+            rsiMin: 50,
+            rsiMax: 70,
+            freeMaxStocks: 20,
+            proMaxStocks: 100
+        };
+
+        // Freemium state
+        let isPremium = false;
+
+        // Stock universe
+        const STOCK_UNIVERSE = [
+            'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'META', 'TSLA', 'BRK.B', 'V', 'UNH',
+            'JNJ', 'WMT', 'JPM', 'MA', 'PG', 'XOM', 'HD', 'CVX', 'LLY', 'ABBV',
+            'MRK', 'AVGO', 'KO', 'PEP', 'COST', 'TMO', 'BAC', 'CSCO', 'ACN', 'MCD',
+            'ADBE', 'DHR', 'NFLX', 'ABT', 'CRM', 'VZ', 'DIS', 'NKE', 'CMCSA', 'TXN',
+            'AMD', 'INTC', 'QCOM', 'ORCL', 'PFE', 'UPS', 'RTX', 'HON', 'PM', 'NEE',
+            'UNP', 'LOW', 'SPGI', 'COP', 'IBM', 'BA', 'GS', 'INTU', 'BMY', 'AMGN',
+            'BLK', 'SBUX', 'AXP', 'DE', 'CAT', 'GILD', 'MDLZ', 'LMT', 'ADI', 'ISRG',
+            'NOW', 'TJX', 'SYK', 'PLD', 'BKNG', 'VRTX', 'MMM', 'CI', 'ZTS', 'CB',
+            'REGN', 'MO', 'EOG', 'DUK', 'SO', 'BDX', 'HUM', 'PNC', 'USB', 'AON'
+        ];
+
+        // Global state
+        let polygonApiKey = '';
+        let currentResults = [];
+        let autoRefreshInterval = null;
+        let nextScanTime = null;
+
+        // DOM Elements
+        const apiKeyInput = document.getElementById('apiKeyInput');
+        const apiStatus = document.getElementById('apiStatus');
+        const apiStatusText = document.getElementById('apiStatusText');
+        const scanBtn = document.getElementById('scanBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        const autoRefreshToggle = document.getElementById('autoRefreshToggle');
+        const status = document.getElementById('status');
+        const resultsTable = document.getElementById('resultsTable');
+        const resultsBody = document.getElementById('resultsBody');
+        const resultsCount = document.getElementById('resultsCount');
+        const noResults = document.getElementById('noResults');
+        const timestamp = document.getElementById('timestamp');
+        const errorContainer = document.getElementById('errorContainer');
+        const loadingContainer = document.getElementById('loadingContainer');
+
+        // Event Listeners
+        apiKeyInput.addEventListener('input', handleApiKeyInput);
+        apiKeyInput.addEventListener('paste', handleApiKeyInput);
+        scanBtn.addEventListener('click', runScan);
+        clearBtn.addEventListener('click', clearResults);
+        exportBtn.addEventListener('click', exportToTradeZella);
+        autoRefreshToggle.addEventListener('change', handleAutoRefreshToggle);
+
+        // Load saved API key from localStorage
+        const savedApiKey = localStorage.getItem('polygonApiKey');
+        if (savedApiKey) {
+            apiKeyInput.value = savedApiKey;
+            handleApiKeyInput();
+        }
+
+        // Check premium status
+        function checkPremiumStatus() {
+            const premiumExpiry = localStorage.getItem('premiumExpiry');
+            if (premiumExpiry && new Date(premiumExpiry) > new Date()) {
+                isPremium = true;
+                updatePremiumUI();
+            } else {
+                isPremium = false;
+                localStorage.removeItem('premiumExpiry');
+                updateFreeUI();
+            }
+        }
+
+        function updatePremiumUI() {
+            isPremium = true;
+            document.getElementById('tierBadge').innerHTML = '<span class="premium-badge">⭐ PRO</span>';
+            document.getElementById('tierBanner').style.display = 'none';
+        }
+
+        function updateFreeUI() {
+            isPremium = false;
+            document.getElementById('tierBadge').innerHTML = '';
+            document.getElementById('tierBanner').style.display = 'flex';
+        }
+
+        // Pricing modal functions
+        function openPricingModal() {
+            document.getElementById('pricingModal').style.display = 'block';
+        }
+
+        function closePricingModal() {
+            document.getElementById('pricingModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('pricingModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        function initializePayment(plan) {
+            // For demo: simulate payment with 7-day trial
+            alert(`🎉 Welcome to A+ Scanner Pro!\n\nFor this demo, you've been granted a 7-day free trial.\n\nIn production, this would redirect to Stripe checkout for ${plan === 'monthly' ? '$29/month' : '$299/year'}.`);
+            
+            const expiryDate = new Date();
+            expiryDate.setDate(expiryDate.getDate() + 7);
+            localStorage.setItem('premiumExpiry', expiryDate.toISOString());
+            
+            updatePremiumUI();
+            closePricingModal();
+        }
+
+        // Initialize premium check
+        checkPremiumStatus();
+
+        // Handle API key input
+        function handleApiKeyInput() {
+            const apiKey = apiKeyInput.value.trim();
+            
+            if (apiKey.length > 10) {
+                polygonApiKey = apiKey;
+                localStorage.setItem('polygonApiKey', apiKey);
+                
+                apiStatus.className = 'api-status api-connected';
+                apiStatusText.textContent = '✓ API Connected';
+                scanBtn.disabled = false;
+                status.textContent = 'Ready to scan';
+                
+                console.log('Polygon.io API key configured');
+            } else {
+                polygonApiKey = '';
+                apiStatus.className = 'api-status api-disconnected';
+                apiStatusText.textContent = 'API Not Connected';
+                scanBtn.disabled = true;
+                status.textContent = 'Enter API key to begin';
+            }
+        }
+
+        // Check if in market hours (pre-market 4AM + regular 9:30AM-4PM)
+        function isMarketHours() {
+            const now = new Date();
+            const etTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+            
+            const hour = etTime.getHours();
+            const dayOfWeek = etTime.getDay();
+            
+            if (dayOfWeek === 0 || dayOfWeek === 6) return false;
+            if (hour < 4 || hour >= 16) return false;
+            
+            return true;
+        }
+
+        // Check if specifically in pre-market
+        function isPreMarket() {
+            const now = new Date();
+            const etTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+            
+            const hour = etTime.getHours();
+            const minute = etTime.getMinutes();
+            const dayOfWeek = etTime.getDay();
+            
+            if (dayOfWeek === 0 || dayOfWeek === 6) return false;
+            if (hour >= 4 && (hour < 9 || (hour === 9 && minute < 30))) return true;
+            
+            return false;
+        }
+
+        // Format helpers
+        function formatNumber(num) {
+            return num.toLocaleString('en-US');
+        }
+
+        function formatCurrency(num) {
+            return '$' + num.toFixed(2);
+        }
+
+        function formatMarketCap(num) {
+            if (num >= 1000000000000) return '$' + (num / 1000000000000).toFixed(2) + 'T';
+            if (num >= 1000000000) return '$' + (num / 1000000000).toFixed(2) + 'B';
+            return '$' + (num / 1000000).toFixed(2) + 'M';
+        }
+
+        function formatFloat(num) {
+            if (num >= 1000000000) return (num / 1000000000).toFixed(2) + 'B';
+            if (num >= 1000000) return (num / 1000000).toFixed(2) + 'M';
+            return formatNumber(num);
+        }
+
+        function getFloatCategory(floatShares) {
+            if (floatShares < 5000000) {
+                return { type: 'Nano', class: 'badge-orange', risk: 'Very High Risk' };
+            } else if (floatShares < 20000000) {
+                return { type: 'Low', class: 'badge-orange', risk: 'High Volatility' };
+            } else if (floatShares < 100000000) {
+                return { type: 'Medium', class: 'badge-green', risk: 'Balanced' };
+            } else if (floatShares < 500000000) {
+                return { type: 'High', class: 'badge-blue', risk: 'Lower Volatility' };
+            } else {
+                return { type: 'Mega', class: 'badge-gray', risk: 'Institutional' };
+            }
+        }
+
+        // Calculate RSI (simplified 14-period)
+        function calculateRSI(prices) {
+            if (prices.length < 14) return 50;
+            
+            let gains = 0;
+            let losses = 0;
+            
+            for (let i = 1; i < 14; i++) {
+                const change = prices[i] - prices[i - 1];
+                if (change > 0) gains += change;
+                else losses += Math.abs(change);
+            }
+            
+            const avgGain = gains / 14;
+            const avgLoss = losses / 14;
+            
+            if (avgLoss === 0) return 100;
+            
+            const rs = avgGain / avgLoss;
+            return 100 - (100 / (1 + rs));
+        }
+
+        // Calculate VWAP (simplified)
+        function calculateVWAP(aggregates) {
+            if (!aggregates || aggregates.length === 0) return 0;
+            
+            let sumPV = 0;
+            let sumV = 0;
+            
+            aggregates.forEach(agg => {
+                const typicalPrice = (agg.h + agg.l + agg.c) / 3;
+                sumPV += typicalPrice * agg.v;
+                sumV += agg.v;
+            });
+            
+            return sumV > 0 ? sumPV / sumV : aggregates[aggregates.length - 1].c;
+        }
+
+        // Fetch stock data from Polygon.io
+        async function fetchStockData(symbol) {
+            if (!polygonApiKey) {
+                console.error('No API key set for', symbol);
+                return null;
+            }
+            
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+                
+                console.log(`Fetching ${symbol} from Polygon.io...`);
+                
+                // Get previous close
+                const prevCloseUrl = `https://api.polygon.io/v2/aggs/ticker/${symbol}/prev?adjusted=true&apiKey=${polygonApiKey}`;
+                console.log('Prev close URL:', prevCloseUrl.replace(polygonApiKey, 'API_KEY_HIDDEN'));
+                
+                const prevCloseRes = await fetch(prevCloseUrl);
+                const prevCloseData = await prevCloseRes.json();
+                
+                console.log(`${symbol} prev close response:`, prevCloseData);
+                
+                if (prevCloseData.status === 'ERROR' || prevCloseData.status === 'UNAUTHORIZED') {
+                    console.error(`Polygon.io API error for ${symbol}:`, prevCloseData);
+                    errorContainer.innerHTML = `
+                        <div class="error-message">
+                            ⚠️ API Error: ${prevCloseData.error || prevCloseData.message || 'Unauthorized'}
+                            <br>Check your API key and Polygon.io subscription status.
+                        </div>
+                    `;
+                    return null;
+                }
+                
+                if (!prevCloseData.results || prevCloseData.results.length === 0) {
+                    console.log(`No previous close for ${symbol}`);
+                    return null;
+                }
+                
+                const prevClose = prevCloseData.results[0].c;
+                console.log(`${symbol} prev close: $${prevClose}`);
+                
+                // Get current snapshot (includes pre-market data)
+                const snapshotUrl = `https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers/${symbol}?apiKey=${polygonApiKey}`;
+                const snapshotRes = await fetch(snapshotUrl);
+                const snapshotData = await snapshotRes.json();
+                
+                console.log(`${symbol} snapshot:`, snapshotData);
+                
+                if (!snapshotData.ticker) {
+                    console.log(`No snapshot data for ${symbol}`);
+                    return null;
+                }
+                
+                const ticker = snapshotData.ticker;
+                const currentPrice = ticker.day?.c || ticker.min?.c || ticker.prevDay?.c || prevClose;
+                const volume = ticker.day?.v || 0;
+                
+                console.log(`${symbol} current price: $${currentPrice}, volume: ${volume}`);
+                
+                // Get ticker details for market cap and float
+                const detailsUrl = `https://api.polygon.io/v3/reference/tickers/${symbol}?apiKey=${polygonApiKey}`;
+                const detailsRes = await fetch(detailsUrl);
+                const detailsData = await detailsRes.json();
+                
+                console.log(`${symbol} details:`, detailsData);
+                
+                const marketCap = detailsData.results?.market_cap || 0;
+                const sharesOutstanding = detailsData.results?.share_class_shares_outstanding || 0;
+                const float = sharesOutstanding * 0.9; // Estimate 90% float
+                
+                // Get aggregates for RSI and VWAP
+                const aggUrl = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/day/${thirtyDaysAgo}/${today}?adjusted=true&sort=asc&apiKey=${polygonApiKey}`;
+                const aggRes = await fetch(aggUrl);
+                const aggData = await aggRes.json();
+                
+                console.log(`${symbol} aggregates count:`, aggData.results?.length || 0);
+                
+                const aggregates = aggData.results || [];
+                const prices = aggregates.map(a => a.c);
+                const avgVolume = aggregates.length > 0 ? aggregates.reduce((sum, a) => sum + a.v, 0) / aggregates.length : 0;
+                
+                const rsi = calculateRSI(prices);
+                const vwap = calculateVWAP(aggregates.slice(-5)); // Last 5 days for VWAP
+                
+                // Calculate gap %
+                const gapPercent = ((currentPrice - prevClose) / prevClose) * 100;
+                
+                const stockData = {
+                    symbol,
+                    price: currentPrice,
+                    prevClose,
+                    change: ((currentPrice - prevClose) / prevClose) * 100,
+                    gap: gapPercent,
+                    volume,
+                    avgVolume,
+                    marketCap,
+                    float,
+                    rsi,
+                    vwap
+                };
+                
+                console.log(`${symbol} final data:`, stockData);
+                
+                return stockData;
+                
+            } catch (error) {
+                console.error(`Error fetching ${symbol}:`, error);
+                errorContainer.innerHTML = `
+                    <div class="error-message">
+                        ⚠️ Network error fetching ${symbol}: ${error.message}
+                        <br>Check console (F12) for details.
+                    </div>
+                `;
+                return null;
+            }
+        }
+
+        // Check if stock meets A+ criteria
+        function meetsAPlusCriteria(stock) {
+            return (
+                stock.marketCap > CONFIG.marketCapMin &&
+                stock.avgVolume > CONFIG.avgVolumeMin &&
+                stock.price > CONFIG.priceMin &&
+                stock.price > stock.vwap &&
+                stock.rsi >= CONFIG.rsiMin &&
+                stock.rsi <= CONFIG.rsiMax
+            );
+        }
+
+        // Run scan
+        async function runScan() {
+            if (!polygonApiKey) {
+                alert('Please enter your Polygon.io API key first');
+                return;
+            }
+            
+            scanBtn.disabled = true;
+            const preMarketMode = isPreMarket();
+            const marketPhase = preMarketMode ? 'PRE-MARKET' : 'REGULAR HOURS';
+            
+            status.textContent = `Scanning... (${marketPhase})`;
+            status.className = 'status scanning';
+            resultsTable.style.display = 'none';
+            noResults.style.display = 'none';
+            errorContainer.innerHTML = '';
+            resultsBody.innerHTML = '';
+            resultsCount.textContent = '0 stocks found';
+            
+            loadingContainer.innerHTML = '<div class="loading-spinner"></div>';
+            
+            try {
+                const results = [];
+                
+                // Polygon.io has no rate limits on paid plans, but we'll batch for UX
+                for (let i = 0; i < STOCK_UNIVERSE.length; i += 15) {
+                    const batch = STOCK_UNIVERSE.slice(i, i + 15);
+                    const batchPromises = batch.map(symbol => fetchStockData(symbol));
+                    const batchResults = await Promise.all(batchPromises);
+                    
+                    results.push(...batchResults.filter(stock => stock !== null));
+                    
+                    status.textContent = `Scanning... (${marketPhase}) ${Math.min(i + 15, STOCK_UNIVERSE.length)}/${STOCK_UNIVERSE.length}`;
+                    
+                    // Small delay for visual feedback
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                }
+                
+                const aPlusStocks = results.filter(meetsAPlusCriteria);
+                
+                displayResults(aPlusStocks, preMarketMode);
+                
+                if (preMarketMode && aPlusStocks.length > 0) {
+                    errorContainer.innerHTML = `
+                        <div class="info-message">
+                            🌅 <strong>Pre-Market Data:</strong> Showing ${aPlusStocks.length} stocks with gap momentum. Gaps calculated from previous close.
+                        </div>
+                    `;
+                }
+                
+            } catch (error) {
+                console.error('Scan error:', error);
+                errorContainer.innerHTML = `
+                    <div class="error-message">
+                        ⚠️ Scan error: ${error.message}
+                        <br><strong>Troubleshooting:</strong>
+                        <br>1. Check your API key is correct
+                        <br>2. Verify Polygon.io subscription is active
+                        <br>3. Open Console (F12) to see detailed error messages
+                        <br>4. Test your API key at: <a href="https://polygon.io/dashboard" target="_blank" style="color: #1565C0;">polygon.io/dashboard</a>
+                    </div>
+                `;
+                
+                noResults.style.display = 'block';
+                resultsTable.style.display = 'none';
+            } finally {
+                loadingContainer.innerHTML = '';
+                scanBtn.disabled = false;
+                status.textContent = `Scan complete (${marketPhase})`;
+                status.className = 'status';
+            }
+        }
+
+        // Display results
+        function displayResults(stocks, isPreMarket = false) {
+            console.log('displayResults called with', stocks.length, 'stocks');
+            currentResults = stocks;
+            
+            // Enforce freemium limits
+            const maxStocks = isPremium ? CONFIG.proMaxStocks : CONFIG.freeMaxStocks;
+            let displayStocks = stocks;
+            let isLimited = false;
+            
+            if (stocks.length > maxStocks) {
+                displayStocks = stocks.slice(0, maxStocks);
+                isLimited = true;
+            }
+            
+            if (stocks.length === 0) {
+                noResults.style.display = 'block';
+                resultsTable.style.display = 'none';
+                resultsCount.textContent = '0 stocks found';
+                exportBtn.disabled = true;
+                return;
+            }
+            
+            noResults.style.display = 'none';
+            resultsTable.style.display = 'table';
+            
+            // Update results count with limitation notice
+            if (isLimited && !isPremium) {
+                resultsCount.innerHTML = `${displayStocks.length} of ${stocks.length} stocks shown <span class="premium-badge" style="margin-left: 10px; font-size: 0.8em; cursor: pointer;" onclick="openPricingModal()">Unlock All</span>`;
+                if (!errorContainer.innerHTML.includes('LIMITED')) {
+                    errorContainer.innerHTML = `
+                        <div class="limited-notice">
+                            🔒 Free tier showing top ${maxStocks} results. Upgrade to Pro to see all ${stocks.length} stocks!
+                        </div>
+                    `;
+                }
+            } else {
+                resultsCount.textContent = `${displayStocks.length} stock${displayStocks.length !== 1 ? 's' : ''} found`;
+                if (isLimited) {
+                    errorContainer.innerHTML = `
+                        <div class="info-message">
+                            📊 Showing top ${maxStocks} results (${stocks.length} total matched)
+                        </div>
+                    `;
+                }
+            }
+            
+            exportBtn.disabled = !isPremium;
+            
+            // Sort by gap % if pre-market, else by RSI
+            if (isPreMarket) {
+                displayStocks.sort((a, b) => Math.abs(b.gap) - Math.abs(a.gap));
+            } else {
+                displayStocks.sort((a, b) => Math.abs(a.rsi - 60) - Math.abs(b.rsi - 60));
+            }
+            
+            resultsBody.innerHTML = displayStocks.map(stock => {
+                const floatCategory = getFloatCategory(stock.float || 0);
+                const pmIndicator = isPreMarket && Math.abs(stock.gap) >= 2 ? '<span class="pm-indicator">PM GAP</span>' : '';
+                
+                return `
+                    <tr>
+                        <td class="symbol">${stock.symbol}</td>
+                        <td><strong>${formatCurrency(stock.price)}</strong></td>
+                        <td class="${stock.change >= 0 ? 'positive' : 'negative'}">
+                            ${stock.change >= 0 ? '+' : ''}${stock.change.toFixed(2)}%
+                        </td>
+                        <td class="${stock.gap >= 0 ? 'positive' : 'negative'}">
+                            ${stock.gap >= 0 ? '+' : ''}${stock.gap.toFixed(2)}%
+                        </td>
+                        <td>${formatNumber(Math.round(stock.volume))}</td>
+                        <td>${formatNumber(Math.round(stock.avgVolume))}</td>
+                        <td>${formatMarketCap(stock.marketCap)}</td>
+                        <td><strong>${formatFloat(stock.float || 0)}</strong></td>
+                        <td><span class="badge ${floatCategory.class}" title="${floatCategory.risk}">${floatCategory.type}</span></td>
+                        <td><span class="badge badge-green">${stock.rsi.toFixed(1)}</span></td>
+                        <td>${formatCurrency(stock.vwap)}</td>
+                        <td><span class="badge badge-blue">A+ Setup</span> ${pmIndicator}</td>
+                    </tr>
+                `;
+            }).join('');
+            
+            timestamp.textContent = `Last updated: ${new Date().toLocaleString()} ET`;
+        }
+
+        // Export to TradeZella
+        function exportToTradeZella() {
+            if (!isPremium) {
+                alert('Export is a Pro feature. Upgrade now to export your scans!');
+                openPricingModal();
+                return;
+            }
+            
+            if (currentResults.length === 0) {
+                alert('No results to export.');
+                return;
+            }
+            
+            const csvRows = [
+                ['Symbol', 'Date', 'Setup', 'Notes', 'Entry Price', 'Position Size', 'Stop Loss', 'Target']
+            ];
+            
+            const today = new Date().toISOString().split('T')[0];
+            const preMarketMode = isPreMarket();
+            
+            currentResults.forEach(stock => {
+                const floatCategory = getFloatCategory(stock.float || 0);
+                const setupType = preMarketMode ? 'Pre-Market A+ Setup' : 'A+ Scanner Setup';
+                const gapNote = Math.abs(stock.gap) >= 2 ? `Gap: ${stock.gap.toFixed(2)}% | ` : '';
+                
+                const notes = `${setupType} | ${gapNote}RSI: ${stock.rsi.toFixed(1)} | VWAP: ${formatCurrency(stock.vwap)} | Vol: ${formatNumber(Math.round(stock.volume))} | Float: ${formatFloat(stock.float || 0)} (${floatCategory.type}) | Mkt Cap: ${formatMarketCap(stock.marketCap)}`;
+                
+                const stopLoss = (stock.price * 0.98).toFixed(2);
+                const target = (stock.price * 1.03).toFixed(2);
+                
+                csvRows.push([
+                    stock.symbol,
+                    today,
+                    setupType,
+                    notes,
+                    stock.price.toFixed(2),
+                    '',
+                    stopLoss,
+                    target
+                ]);
+            });
+            
+            const csvContent = csvRows.map(row => 
+                row.map(cell => `"${cell}"`).join(',')
+            ).join('\n');
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `aplus-polygon-${today}.csv`);
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            status.textContent = `✅ Exported ${currentResults.length} setups`;
+        }
+
+        // Auto-refresh handling
+        function handleAutoRefreshToggle(event) {
+            if (event.target.checked) {
+                if (!isPremium) {
+                    alert('Auto-refresh is a Pro feature. Upgrade to enable continuous scanning!');
+                    event.target.checked = false;
+                    openPricingModal();
+                    return;
+                }
+                
+                if (!polygonApiKey) {
+                    alert('Please enter your API key first');
+                    event.target.checked = false;
+                    return;
+                }
+                startAutoRefresh();
+            } else {
+                stopAutoRefresh();
+            }
+        }
+
+        function startAutoRefresh() {
+            console.log('Auto-refresh enabled');
+            
+            if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+            
+            if (isMarketHours()) {
+                runScan();
+            }
+            
+            autoRefreshInterval = setInterval(() => {
+                if (isMarketHours()) {
+                    const now = Date.now();
+                    if (!nextScanTime || now >= nextScanTime) {
+                        runScan();
+                        nextScanTime = now + (5 * 60 * 1000);
+                    }
+                }
+            }, 1000);
+        }
+
+        function stopAutoRefresh() {
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+                autoRefreshInterval = null;
+            }
+            nextScanTime = null;
+        }
+
+        // Clear results
+        function clearResults() {
+            currentResults = [];
+            resultsBody.innerHTML = '';
+            resultsTable.style.display = 'none';
+            noResults.style.display = 'none';
+            errorContainer.innerHTML = '';
+            loadingContainer.innerHTML = '';
+            resultsCount.textContent = '0 stocks found';
+            timestamp.textContent = '';
+            exportBtn.disabled = true;
+            
+            if (!autoRefreshToggle.checked) {
+                status.textContent = 'Ready to scan';
+                status.className = 'status';
+            }
+        }
+
+        console.log('A+ Scanner Pro (Polygon.io) loaded');
+        console.log('Pre-market (4AM-9:30AM) + Regular hours (9:30AM-4PM) supported');
+    </script>
+</body>
+</html>

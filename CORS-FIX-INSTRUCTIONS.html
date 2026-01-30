@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A+ Scanner Pro | CORS-Free Edition</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #fff;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .warning-box {
+            background: rgba(255, 152, 0, 0.2);
+            border-left: 4px solid #FF9800;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        .info-box {
+            background: rgba(33, 150, 243, 0.2);
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .setup-instructions {
+            background: white;
+            color: #333;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .setup-instructions h2 {
+            color: #1e3c72;
+            margin-bottom: 15px;
+        }
+
+        .step {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f5f5f5;
+            border-left: 4px solid #4CAF50;
+            border-radius: 4px;
+        }
+
+        .step strong {
+            color: #1e3c72;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .code {
+            background: #263238;
+            color: #4CAF50;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+
+        .btn {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px 5px;
+        }
+
+        .btn:hover {
+            background: #45a049;
+        }
+
+        .btn-secondary {
+            background: #2196F3;
+        }
+
+        .option-card {
+            background: white;
+            color: #333;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .option-card h3 {
+            color: #1e3c72;
+            margin-bottom: 10px;
+        }
+
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .pros, .cons {
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        .pros {
+            background: #e8f5e9;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .cons {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+        }
+
+        .pros h4 {
+            color: #2e7d32;
+            margin-bottom: 8px;
+        }
+
+        .cons h4 {
+            color: #c62828;
+            margin-bottom: 8px;
+        }
+
+        ul {
+            margin-left: 20px;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚡ A+ Scanner Pro</h1>
+            <div class="warning-box">
+                <strong>⚠️ CORS ERROR DETECTED</strong><br>
+                Your browser is blocking API requests due to CORS (Cross-Origin Resource Sharing) policy.
+                This happens when opening HTML files directly from your file system.
+            </div>
+            <div class="info-box">
+                <strong>📋 Quick Fix Available</strong><br>
+                Choose one of the solutions below to run your scanner without CORS issues.
+            </div>
+        </header>
+
+        <div class="setup-instructions">
+            <h2>🎯 Choose Your Solution</h2>
+            <p>Pick the method that works best for your setup:</p>
+        </div>
+
+        <!-- SOLUTION 1 -->
+        <div class="option-card">
+            <h3>✅ Solution 1: Local Web Server (RECOMMENDED)</h3>
+            <p><strong>Best for:</strong> Daily use, most reliable, professional setup</p>
+            
+            <div class="pros-cons">
+                <div class="pros">
+                    <h4>✓ Pros</h4>
+                    <ul>
+                        <li>100% reliable</li>
+                        <li>No external dependencies</li>
+                        <li>Works offline</li>
+                        <li>Fast performance</li>
+                        <li>No security concerns</li>
+                    </ul>
+                </div>
+                <div class="cons">
+                    <h4>✗ Cons</h4>
+                    <ul>
+                        <li>Requires Python installed</li>
+                        <li>One-time setup (5 min)</li>
+                        <li>Terminal stays open</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="step">
+                <strong>Step 1: Check if Python is installed</strong>
+                Open Command Prompt (Windows) or Terminal (Mac) and type:
+                <div class="code">python --version</div>
+                If you see "Python 3.x.x" → You're ready!<br>
+                If not → Download from <a href="https://www.python.org/downloads/" target="_blank">python.org</a>
+            </div>
+
+            <div class="step">
+                <strong>Step 2: Download the server launcher</strong>
+                I've created <code>START_SCANNER_SERVER.bat</code> (Windows) or <code>start_scanner_server.sh</code> (Mac/Linux)<br>
+                Save it in the same folder as your scanner HTML files.
+            </div>
+
+            <div class="step">
+                <strong>Step 3: Run the server</strong>
+                <strong>Windows:</strong> Double-click <code>START_SCANNER_SERVER.bat</code><br>
+                <strong>Mac/Linux:</strong> Open Terminal, navigate to folder, run:
+                <div class="code">chmod +x start_scanner_server.sh<br>./start_scanner_server.sh</div>
+            </div>
+
+            <div class="step">
+                <strong>Step 4: Open scanner in browser</strong>
+                Go to: <code>http://localhost:8000/aplus-polygon-scanner.html</code><br>
+                Leave the terminal window open while using scanner.
+            </div>
+        </div>
+
+        <!-- SOLUTION 2 -->
+        <div class="option-card">
+            <h3>🌐 Solution 2: Use Chrome Extension (Easiest)</h3>
+            <p><strong>Best for:</strong> Quick testing, no setup required</p>
+            
+            <div class="pros-cons">
+                <div class="pros">
+                    <h4>✓ Pros</h4>
+                    <ul>
+                        <li>30-second setup</li>
+                        <li>No command line needed</li>
+                        <li>Works immediately</li>
+                    </ul>
+                </div>
+                <div class="cons">
+                    <h4>✗ Cons</h4>
+                    <ul>
+                        <li>Chrome/Edge only</li>
+                        <li>Less secure (disables CORS)</li>
+                        <li>Remember to disable after use</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="step">
+                <strong>Step 1: Install Extension</strong>
+                Go to Chrome Web Store → Search "Allow CORS: Access-Control-Allow-Origin"<br>
+                Or use: <a href="https://chrome.google.com/webstore/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf" target="_blank">Direct Link</a>
+            </div>
+
+            <div class="step">
+                <strong>Step 2: Enable Extension</strong>
+                Click the extension icon → Toggle "ON" (icon turns orange/green)
+            </div>
+
+            <div class="step">
+                <strong>Step 3: Refresh Scanner</strong>
+                Reload your scanner page → API calls will now work
+            </div>
+
+            <div class="step">
+                <strong>⚠️ IMPORTANT: Disable when done</strong>
+                After using scanner, toggle extension OFF for normal browsing security.
+            </div>
+        </div>
+
+        <!-- SOLUTION 3 -->
+        <div class="option-card">
+            <h3>☁️ Solution 3: Upload to Web Hosting (Production)</h3>
+            <p><strong>Best for:</strong> Team use, permanent deployment</p>
+            
+            <div class="pros-cons">
+                <div class="pros">
+                    <h4>✓ Pros</h4>
+                    <ul>
+                        <li>Access from anywhere</li>
+                        <li>Share with team</li>
+                        <li>Mobile compatible</li>
+                        <li>Always available</li>
+                    </ul>
+                </div>
+                <div class="cons">
+                    <h4>✗ Cons</h4>
+                    <ul>
+                        <li>Requires hosting account</li>
+                        <li>May have costs</li>
+                        <li>Exposes API key (needs backend)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="step">
+                <strong>Free Hosting Options:</strong>
+                <ul>
+                    <li><strong>Netlify:</strong> Drag & drop HTML files → <a href="https://app.netlify.com/drop" target="_blank">netlify.com/drop</a></li>
+                    <li><strong>Vercel:</strong> Connect GitHub repo → <a href="https://vercel.com" target="_blank">vercel.com</a></li>
+                    <li><strong>GitHub Pages:</strong> Free with GitHub account → <a href="https://pages.github.com" target="_blank">pages.github.com</a></li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <strong>⚠️ SECURITY WARNING:</strong>
+                If deploying publicly, DO NOT hardcode your API key in the HTML file.<br>
+                Use environment variables or a backend proxy to protect your key.
+            </div>
+        </div>
+
+        <!-- SOLUTION 4 -->
+        <div class="option-card">
+            <h3>🔧 Solution 4: VS Code Live Server (Developer Option)</h3>
+            <p><strong>Best for:</strong> If you already use VS Code</p>
+            
+            <div class="step">
+                <strong>Step 1: Install VS Code</strong>
+                Download from <a href="https://code.visualstudio.com/" target="_blank">code.visualstudio.com</a>
+            </div>
+
+            <div class="step">
+                <strong>Step 2: Install Live Server Extension</strong>
+                Open VS Code → Extensions (Ctrl+Shift+X) → Search "Live Server" → Install
+            </div>
+
+            <div class="step">
+                <strong>Step 3: Open Scanner Folder</strong>
+                File → Open Folder → Select folder containing scanner HTML files
+            </div>
+
+            <div class="step">
+                <strong>Step 4: Launch Server</strong>
+                Right-click <code>aplus-polygon-scanner.html</code> → "Open with Live Server"<br>
+                Scanner opens automatically at <code>http://127.0.0.1:5500/aplus-polygon-scanner.html</code>
+            </div>
+        </div>
+
+        <div class="setup-instructions">
+            <h2>📊 My Recommendation for You</h2>
+            <p><strong>Start with Solution 1 (Local Web Server)</strong></p>
+            <ul>
+                <li>Most reliable for daily trading use</li>
+                <li>Python likely already installed on Windows 10/11</li>
+                <li>One-time 5-minute setup</li>
+                <li>Just double-click .bat file each morning</li>
+            </ul>
+            <br>
+            <p><strong>Fallback: Solution 2 (Chrome Extension)</strong></p>
+            <ul>
+                <li>If Python not available</li>
+                <li>Need scanner working in 30 seconds</li>
+                <li>Remember to disable extension after use</li>
+            </ul>
+        </div>
+
+        <footer>
+            <strong>ChartScript AI LLC</strong> | Professional Trading Tools<br>
+            Rev. Barry Cannon, MSN, RN, PMP, ITIL v4
+        </footer>
+    </div>
+</body>
+</html>

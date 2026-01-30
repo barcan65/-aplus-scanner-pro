@@ -1,0 +1,14 @@
+[build]
+  publish = "."
+  command = "echo 'Static site'"
+
+[[redirects]]
+  from = "/*"
+  to = "/aplus-polygon-scanner.html"
+  status = 200
+
+[context.production]
+  command = "echo 'Production build'"
+
+[context.deploy-preview]
+  command = "echo 'Preview build'"

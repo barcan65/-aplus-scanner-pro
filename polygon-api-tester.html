@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polygon.io API Key Tester</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #1e3c72;
+            margin-bottom: 20px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: monospace;
+        }
+        
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+        }
+        
+        button:hover {
+            background: #45a049;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+        }
+        
+        .success {
+            background: #e8f5e9;
+            border-left: 4px solid #4CAF50;
+            color: #2e7d32;
+        }
+        
+        .error {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+            color: #c62828;
+        }
+        
+        .info {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            color: #1565C0;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        
+        .stock-data {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        
+        .stock-data strong {
+            color: #1e3c72;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Polygon.io API Key Tester</h1>
+        <p>Test your Polygon.io API key and verify it can fetch real-time stock data.</p>
+        
+        <div class="input-group">
+            <label for="apiKey">Polygon.io API Key:</label>
+            <input type="password" id="apiKey" placeholder="Enter your API key (starts with random characters)">
+        </div>
+        
+        <div class="input-group">
+            <label for="symbol">Test Symbol:</label>
+            <input type="text" id="symbol" placeholder="NVDA" value="NVDA">
+        </div>
+        
+        <button id="testBtn">🚀 Test API Connection</button>
+        
+        <div class="loading" id="loading">
+            <p>Testing connection...</p>
+        </div>
+        
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        const apiKeyInput = document.getElementById('apiKey');
+        const symbolInput = document.getElementById('symbol');
+        const testBtn = document.getElementById('testBtn');
+        const loading = document.getElementById('loading');
+        const result = document.getElementById('result');
+
+        // Load saved API key
+        const savedKey = localStorage.getItem('polygonApiKey');
+        if (savedKey) {
+            apiKeyInput.value = savedKey;
+        }
+
+        testBtn.addEventListener('click', testApiKey);
+
+        async function testApiKey() {
+            const apiKey = apiKeyInput.value.trim();
+            const symbol = symbolInput.value.trim().toUpperCase();
+            
+            if (!apiKey) {
+                showResult('error', '❌ Please enter your API key');
+                return;
+            }
+            
+            if (!symbol) {
+                showResult('error', '❌ Please enter a stock symbol');
+                return;
+            }
+            
+            // Save API key
+            localStorage.setItem('polygonApiKey', apiKey);
+            
+            testBtn.disabled = true;
+            loading.style.display = 'block';
+            result.style.display = 'none';
+            
+            try {
+                console.log('Testing API key with symbol:', symbol);
+                
+                // Test 1: Previous Close
+                const prevCloseUrl = `https://api.polygon.io/v2/aggs/ticker/${symbol}/prev?adjusted=true&apiKey=${apiKey}`;
+                console.log('Testing previous close endpoint...');
+                
+                const prevRes = await fetch(prevCloseUrl);
+                const prevData = await prevRes.json();
+                
+                console.log('Previous close response:', prevData);
+                
+                if (prevData.status === 'ERROR' || prevData.status === 'UNAUTHORIZED') {
+                    showResult('error', `
+                        ❌ <strong>API Authentication Failed</strong><br><br>
+                        Error: ${prevData.error || prevData.message}<br><br>
+                        <strong>Common causes:</strong><br>
+                        • Invalid API key<br>
+                        • Expired subscription<br>
+                        • Wrong subscription tier (need Stocks Starter or higher)<br><br>
+                        Check your subscription at: <a href="https://polygon.io/dashboard" target="_blank">polygon.io/dashboard</a>
+                    `);
+                    return;
+                }
+                
+                if (!prevData.results || prevData.results.length === 0) {
+                    showResult('error', `
+                        ❌ <strong>No Data Returned</strong><br><br>
+                        Symbol: ${symbol}<br>
+                        The API responded but returned no data. This symbol may be invalid or delisted.
+                    `);
+                    return;
+                }
+                
+                const prevClose = prevData.results[0].c;
+                
+                // Test 2: Current Snapshot
+                const snapshotUrl = `https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers/${symbol}?apiKey=${apiKey}`;
+                console.log('Testing snapshot endpoint...');
+                
+                const snapRes = await fetch(snapshotUrl);
+                const snapData = await snapRes.json();
+                
+                console.log('Snapshot response:', snapData);
+                
+                if (!snapData.ticker) {
+                    showResult('error', `
+                        ❌ <strong>Snapshot Data Missing</strong><br><br>
+                        The snapshot endpoint didn't return ticker data for ${symbol}.
+                    `);
+                    return;
+                }
+                
+                const ticker = snapData.ticker;
+                const currentPrice = ticker.day?.c || ticker.min?.c || ticker.prevDay?.c || prevClose;
+                const volume = ticker.day?.v || 0;
+                
+                // Test 3: Ticker Details
+                const detailsUrl = `https://api.polygon.io/v3/reference/tickers/${symbol}?apiKey=${apiKey}`;
+                console.log('Testing ticker details endpoint...');
+                
+                const detailsRes = await fetch(detailsUrl);
+                const detailsData = await detailsRes.json();
+                
+                console.log('Details response:', detailsData);
+                
+                const marketCap = detailsData.results?.market_cap || 0;
+                const name = detailsData.results?.name || symbol;
+                
+                // Success!
+                const gapPercent = ((currentPrice - prevClose) / prevClose) * 100;
+                
+                showResult('success', `
+                    ✅ <strong>API Connection Successful!</strong><br><br>
+                    <div class="stock-data">
+                        <strong>Company:</strong> ${name} (${symbol})<br>
+                        <strong>Current Price:</strong> $${currentPrice.toFixed(2)}<br>
+                        <strong>Previous Close:</strong> $${prevClose.toFixed(2)}<br>
+                        <strong>Gap:</strong> ${gapPercent >= 0 ? '+' : ''}${gapPercent.toFixed(2)}%<br>
+                        <strong>Volume:</strong> ${volume.toLocaleString()}<br>
+                        <strong>Market Cap:</strong> ${formatMarketCap(marketCap)}<br><br>
+                        <strong>Status:</strong> <span style="color: #4CAF50;">Ready to use in scanner! ✓</span>
+                    </div>
+                `);
+                
+            } catch (error) {
+                console.error('Test error:', error);
+                showResult('error', `
+                    ❌ <strong>Network Error</strong><br><br>
+                    ${error.message}<br><br>
+                    <strong>Check:</strong><br>
+                    • Internet connection<br>
+                    • Firewall/VPN settings<br>
+                    • Browser console (F12) for details
+                `);
+            } finally {
+                testBtn.disabled = false;
+                loading.style.display = 'none';
+            }
+        }
+
+        function showResult(type, message) {
+            result.className = `result ${type}`;
+            result.innerHTML = message;
+            result.style.display = 'block';
+        }
+
+        function formatMarketCap(num) {
+            if (num >= 1000000000000) return '$' + (num / 1000000000000).toFixed(2) + 'T';
+            if (num >= 1000000000) return '$' + (num / 1000000000).toFixed(2) + 'B';
+            if (num >= 1000000) return '$' + (num / 1000000).toFixed(2) + 'M';
+            return '$' + num.toFixed(2);
+        }
+    </script>
+</body>
+</html>
