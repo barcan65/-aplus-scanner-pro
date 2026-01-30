@@ -535,6 +535,18 @@
             font-size: 0.9em;
         }
 
+        .legal-disclaimer {
+            background: rgba(244, 67, 54, 0.15);
+            border-left: 4px solid #d32f2f;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            color: #b71c1c;
+            font-weight: 600;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 1.8em;
@@ -577,6 +589,11 @@
         </div>
 
         <div class="controls">
+            <div class="legal-disclaimer">
+                ⚠️ <strong>LEGAL DISCLAIMER:</strong> This tool is NOT investment advice. It does NOT provide trading recommendations. 
+                You assume 100% of all trading risk. Consult a licensed financial advisor before trading. 
+                See <a href="terms.html" style="color: #b71c1c; text-decoration: underline;">Terms of Service</a> for full disclaimer.
+            </div>
             <div class="api-input-group">
                 <label for="apiKeyInput">🔑 Polygon.io API Key:</label>
                 <input type="password" id="apiKeyInput" placeholder="Enter your Polygon.io API key" />
