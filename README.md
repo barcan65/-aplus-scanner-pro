@@ -1,159 +1,298 @@
-# A+ Scanner Pro - Polygon.io Edition
+# A+ Scanner Pro - Professional Edition
 
-Professional stock screening tool with real-time data from Polygon.io. Includes freemium monetization model.
+Professional stock screening platform with real-time data from Polygon.io, user authentication, and cloud database persistence.
 
-🌐 **[Live App: https://aplus-scanner-pro.netlify.app/](https://aplus-scanner-pro.netlify.app/)**
+## 🚀 Tech Stack
 
-## Features
+- **Frontend**: React 18 + TypeScript + Vite
+- **Styling**: TailwindCSS
+- **Backend**: Supabase (Authentication + Database + Edge Functions)
+- **API**: Polygon.io for real-time stock data
+- **State Management**: Zustand
+- **Routing**: React Router v6
+- **Deployment**: Netlify
 
-### 📊 Screening Capabilities
-- **Real-time Data**: Pre-market & regular hours scanning
-- **A+ Criteria**: Market Cap >$10B, Volume >5M, Price >VWAP, RSI 50-70
-- **Float Analysis**: Categorizes stocks by float size (Nano/Low/Medium/High/Mega)
-- **Technical Indicators**: RSI, VWAP, Gap analysis
+## ✨ Features
+
+### 📊 Core Functionality
+- **Real-time Stock Scanning**: Pre-market & regular hours
+- **A+ Screening Criteria**:
+  - Market Cap > $10B
+  - Average Volume > 5M shares
+  - Price > $5
+  - Price above VWAP
+  - RSI between 50-70
+- **Technical Indicators**: RSI, VWAP, Gap analysis, Float categorization
+- **100+ Stock Universe**: Major US equities
+
+### 🔐 Authentication & User Management
+- Email/password authentication via Supabase
+- Secure session management
+- User profiles with API key storage
+- Premium subscription tracking
+
+### 💾 Data Persistence
+- **Scan History**: Save and review past scans
+- **Watchlist**: Track favorite stocks with custom notes and price targets
+- **Price Alerts**: Set up alerts (Pro feature)
+- All data stored securely in Supabase PostgreSQL
 
 ### 🎯 Freemium Model
 
 **FREE TIER**
 - Up to 20 stocks per scan
 - Manual scans only
-- No export functionality
-- Regular hours only
+- Basic scan history
+- Limited watchlist
 
 **PRO TIER ($29/month or $299/year)**
-- ✓ All 100+ stocks in universe
-- ✓ Export to CSV/TradeZella
+- ✓ Scan 100+ stocks
 - ✓ Auto-refresh every 5 minutes
-- ✓ Advanced RSI/VWAP analysis
+- ✓ Export to CSV/TradeZella
+- ✓ Advanced analytics
+- ✓ Unlimited scan history
+- ✓ Price alerts
 - ✓ Pre-market + Regular hours
-- ✓ 7-day free trial
 
-## Quick Start
+## 🛠️ Development Setup
 
-### Local Development
+### Prerequisites
+- Node.js 18+ and npm
+- Polygon.io API key (free tier available)
+- Supabase account (configured automatically)
+
+### Installation
+
 ```bash
-python -m http.server 8000
-# Visit: http://localhost:8000/aplus-polygon-scanner.html
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
 ```
+
+The app will be available at `http://localhost:5173`
+
+## 📁 Project Structure
+
+```
+├── src/
+│   ├── components/
+│   │   └── Layout.tsx           # Main app layout with navigation
+│   ├── pages/
+│   │   ├── Login.tsx            # Authentication pages
+│   │   ├── Register.tsx
+│   │   ├── Dashboard.tsx        # Main dashboard
+│   │   ├── Scanner.tsx          # Stock scanner
+│   │   ├── History.tsx          # Scan history
+│   │   ├── Watchlist.tsx        # User watchlist
+│   │   └── Settings.tsx         # User settings & API key
+│   ├── store/
+│   │   ├── authStore.ts         # Authentication state
+│   │   └── scannerStore.ts      # Scanner state
+│   ├── lib/
+│   │   └── supabase.ts          # Supabase client config
+│   ├── App.tsx                  # Main app component
+│   ├── main.tsx                 # App entry point
+│   └── index.css                # Global styles
+├── supabase/
+│   └── functions/
+│       └── scan-stocks/         # Edge function for scanning
+│           └── index.ts
+├── index.html
+├── vite.config.ts
+├── tailwind.config.js
+└── netlify.toml                 # Deployment config
+```
+
+## 🗄️ Database Schema
+
+### Tables
+
+**profiles**
+- User profiles with premium status
+- Stores encrypted Polygon.io API keys
+- Tracks premium subscription expiry
+
+**scans**
+- Historical scan results
+- Stores scan data as JSONB
+- Tracks market phase (pre-market/regular)
+
+**watchlist**
+- User's tracked stocks
+- Custom notes and price targets
+- Stop loss levels
+
+**alerts**
+- Price alert configurations
+- Condition-based triggers
+- Active/inactive status
+
+All tables have Row Level Security (RLS) enabled - users can only access their own data.
+
+## 🔧 Configuration
+
+### Environment Variables
+
+Create a `.env` file (already configured):
+
+```env
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+### User Setup
+
+1. Register a new account
+2. Navigate to Settings
+3. Enter your Polygon.io API key
+4. Start scanning!
+
+## 🚀 Deployment
 
 ### Netlify Deployment
 
-1. **Sign up for free at netlify.com**
+The app is configured for automatic Netlify deployment:
 
-2. **Option A: Drag & Drop**
-   - Go to app.netlify.com/drop
-   - Drag the folder containing `aplus-polygon-scanner.html` and `netlify.toml`
-   - Done! Your site is live
+```bash
+# Build command (automatic)
+npm run build
 
-3. **Option B: Git Integration**
-   - Push code to GitHub
-   - Connect repo to Netlify
-   - Auto-deploys on push
-
-## Customization
-
-### Change Pricing
-Edit the modal in the HTML:
-```javascript
-// Line ~520
-<div style="font-size: 2.5em;">
-    $29<span style="font-size: 0.5em;">/month</span>
-</div>
+# Output directory
+dist/
 ```
 
-### Change Stock Limits
-Edit CONFIG:
-```javascript
-// Line ~40
-CONFIG.freeMaxStocks = 20;    // Change this
-CONFIG.proMaxStocks = 100;     // Or this
+**Deploy to Netlify:**
+1. Push code to GitHub
+2. Connect repository to Netlify
+3. Netlify auto-detects settings from `netlify.toml`
+4. Environment variables are automatically configured
+5. Deploy!
+
+The app includes SPA routing via Netlify redirects.
+
+## 💳 Payment Integration
+
+### Stripe Setup (Optional)
+
+To enable real payment processing:
+
+1. Create a Stripe account
+2. Set up monthly and yearly subscriptions
+3. Create Stripe Payment Links
+4. Update payment links in the Settings page upgrade section
+5. Set up webhooks to update `premium_expires_at` in profiles table
+
+### Webhook Endpoint
+
+Create a Supabase Edge Function to handle Stripe webhooks:
+- Update user's `is_premium` status
+- Set `premium_expires_at` date
+- Handle subscription cancellations
+
+## 🔒 Security
+
+- **Authentication**: Supabase Auth with secure JWT tokens
+- **RLS Policies**: Database-level security - users only access their data
+- **API Keys**: Stored encrypted in user profiles
+- **HTTPS**: Enforced by Netlify
+- **Edge Functions**: Proxy Polygon.io requests to keep API keys server-side
+
+## 📊 API Usage
+
+### Polygon.io Requirements
+
+- Free tier: 5 requests/minute
+- Paid tier: Recommended for production use
+- API calls are batched to respect rate limits
+
+### Edge Function
+
+The `scan-stocks` function:
+- Retrieves user's API key from database
+- Fetches data from Polygon.io
+- Applies A+ screening criteria
+- Returns filtered results
+
+## 🎨 Customization
+
+### Screening Criteria
+
+Edit `CONFIG` in `supabase/functions/scan-stocks/index.ts`:
+
+```typescript
+const CONFIG = {
+  marketCapMin: 10000000000,    // $10B
+  avgVolumeMin: 5000000,         // 5M shares
+  priceMin: 5,                   // $5
+  rsiMin: 50,
+  rsiMax: 70,
+};
 ```
 
-### Polygon.io API Integration
-1. Get free API key at polygon.io
-2. Users enter their key in the app
-3. No backend needed - secure client-side requests
+### Stock Universe
 
-## Monetization Setup
+Modify `STOCK_UNIVERSE` array in the same file to change scanned stocks.
 
-### Stripe Integration (Phase 2)
-Replace the `initializePayment()` function with Stripe redirect:
-```javascript
-function initializePayment(plan) {
-}
-```
-Alternatively, use Stripe Payment Links (no server-side code required):
+### Pricing
 
-- Create Payment Links in your Stripe Dashboard for monthly and yearly plans
-- Set `PAYMENT_LINK_MONTHLY` and `PAYMENT_LINK_YEARLY` constants in `aplus-polygon-scanner.html`
+Update pricing in `src/pages/Dashboard.tsx` and `src/pages/Settings.tsx`.
 
-Example (in `aplus-polygon-scanner.html`):
-```javascript
-const PAYMENT_LINK_MONTHLY = 'https://buy.stripe.com/test_xxx';
-const PAYMENT_LINK_YEARLY = 'https://buy.stripe.com/test_yyy';
-```
+## 📈 Performance
 
-The app will open a Payment Link in a new tab; if no links are set, the app falls back to a 7-day demo trial.
+- **Static Frontend**: Fast load times via Vite optimization
+- **Code Splitting**: Automatic route-based splitting
+- **Edge Functions**: Deployed globally on Supabase
+- **Caching**: Browser caching for assets
+- **Bundle Size**: ~370KB (gzipped ~105KB)
 
-### Email for Support
-Update footer with your email:
-```html
-support@yourdomain.com
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**Build fails**
+```bash
+# Clear cache and rebuild
+rm -rf node_modules dist
+npm install
+npm run build
 ```
 
-## Deployment Checklist
+**Auth not working**
+- Check Supabase environment variables
+- Verify email confirmation is disabled in Supabase dashboard
 
-- [ ] Test app locally: `python -m http.server 8000`
-- [ ] Update email address in modal
-- [ ] Register domain name
-- [ ] Create Netlify account
-- [ ] Deploy via Netlify
-- [ ] Add custom domain in Netlify settings
-- [ ] Set up SSL (automatic on Netlify)
-- [ ] Create payment processor account (Stripe/Paddle)
-- [ ] Update `initializePayment()` with real payment handler
-- [ ] Add privacy policy & terms of service
-- [ ] Set up Google Analytics (optional)
+**Scanner returns no results**
+- Verify Polygon.io API key in Settings
+- Check market hours
+- Review browser console for API errors
 
-## File Structure
+## 📝 Legal
 
-```
-aplus-polygon-scanner.html   # Main app (no backend needed)
-netlify.toml                 # Netlify config
-README.md                    # This file
-```
+### Disclaimer
 
-## Browser Compatibility
+This tool does NOT provide investment advice or trading recommendations. Users assume 100% of all trading risk. See `terms.html` and `privacy.html` for complete legal terms.
 
-- Chrome/Edge (latest)
-- Firefox (latest)
-- Safari (latest)
-- Mobile browsers supported
+### License
 
-## Performance
+Created by **THE COVENANT BRIDGE FINANCIAL GROUP LLC**
+Rev. Barry Cannon, MSN, RN, PMP, ITIL v4
 
-- **Zero backend**: Static HTML/CSS/JS
-- **Fast load**: <100KB total
-- **Real-time API**: Polygon.io handles data
-- **Scalable**: No server costs
+## 🤝 Support
 
-## Security Notes
-
-- API keys stored in browser localStorage (user-controlled)
-- No server-side storage of API keys
-- HTTPS enforced by Netlify
-- No user data collection (except payment for Pro)
-
-## Support
-
-For issues:
-1. Check browser console (F12) for errors
-2. Verify Polygon.io API key is valid
-3. Ensure you're within market hours
-4. Check Polygon.io subscription status
+For technical support:
+- Check browser console (F12) for errors
+- Verify API key configuration
+- Review Supabase logs for backend errors
+- Email: support@aplusscanner.com
 
 ---
 
-**Created by THE COVENANT BRIDGE FINANCIAL GROUP LLC**  
-Rev. Barry Cannon, MSN, RN, PMP, ITIL v4
-
+**Version 2.0** - Professional React Edition

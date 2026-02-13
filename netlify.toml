@@ -1,14 +1,14 @@
 [build]
-  publish = "."
-  command = "echo 'Static site'"
+  publish = "dist"
+  command = "npm run build"
 
 [[redirects]]
   from = "/*"
-  to = "/aplus-polygon-scanner.html"
+  to = "/index.html"
   status = 200
 
 [context.production]
-  command = "echo 'Production build'"
+  command = "npm run build"
 
 [context.deploy-preview]
-  command = "echo 'Preview build'"
+  command = "npm run build"

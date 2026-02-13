@@ -1,96 +1,140 @@
-# Netlify Deployment Guide - 3 Easy Steps
+# Deployment Guide - A+ Scanner Pro v2.0
 
-## Step 1: Prepare Files
-You have everything ready:
-- ✅ `aplus-polygon-scanner.html` (main app)
-- ✅ `netlify.toml` (configuration)
-- ✅ `README.md` (documentation)
+Complete deployment guide for the modernized React + Supabase application.
 
-## Step 2: Deploy (Choose One Method)
+## ✅ Pre-Deployment Checklist
 
-### METHOD A: Drag & Drop (Fastest - 1 minute)
-1. Go to **app.netlify.com/drop**
-2. Drag the folder `C:\Trading\Scanners` into the browser
-3. Wait for upload to complete
-4. Done! You'll get a live URL instantly
+- [x] Supabase database configured with all tables
+- [x] Edge function deployed (`scan-stocks`)
+- [x] Environment variables configured
+- [x] Build tested and passing
+- [x] Authentication working
+- [ ] Custom domain ready (optional)
+- [ ] Payment integration configured (optional)
 
-### METHOD B: Git Integration (Best - Automatic Updates)
-1. Create GitHub account at github.com (free)
-2. Create new repository called `aplus-scanner`
-3. Push these 3 files to the repo:
-   ```
-   git init
-   git add .
-   git commit -m "Initial commit"
-   git branch -M main
-   git remote add origin https://github.com/YOUR_USERNAME/aplus-scanner.git
-   git push -u origin main
-   ```
-4. Go to **app.netlify.com**
-5. Click "New site from Git"
-6. Connect your GitHub repo
-7. Netlify auto-deploys on every push
+## 🚀 Quick Start Deployment
 
-### METHOD C: Netlify CLI (For Developers)
+### Option 1: GitHub + Netlify (Recommended)
+
+**Step 1: Push to GitHub**
 ```bash
+git init
+git add .
+git commit -m "Initial commit - A+ Scanner Pro v2.0"
+git remote add origin YOUR_GITHUB_REPO_URL
+git push -u origin main
+```
+
+**Step 2: Connect to Netlify**
+1. Go to [app.netlify.com](https://app.netlify.com)
+2. Click "Add new site" → "Import an existing project"
+3. Connect your GitHub account
+4. Select your repository
+5. Netlify auto-detects settings from `netlify.toml`
+6. Click "Deploy site"
+
+**Step 3: Environment Variables**
+- Already configured in `.env`
+- No additional configuration needed!
+
+**Step 4: Live!**
+- Your site is now live at `https://YOUR_SITE.netlify.app`
+- Every push to main auto-deploys
+
+### Option 2: Netlify CLI
+
+```bash
+# Install CLI
 npm install -g netlify-cli
-cd C:\Trading\Scanners
+
+# Login
+netlify login
+
+# Deploy
 netlify deploy --prod
 ```
 
-## Step 3: Verify & Customize
+### Option 3: Drag & Drop
 
-### After Deploy:
-1. ✅ Test the app at your new URL
-2. ✅ Enter a test Polygon.io API key
-3. ✅ Run a scan to verify it works
-4. ✅ Click "Upgrade to Pro" and verify the pricing modal appears
+```bash
+# Build locally
+npm run build
 
-### Customize Your Domain:
-1. In Netlify dashboard, click "Domain settings"
-2. Add custom domain (requires DNS setup)
-   - Free: `aplus-scanner.netlify.app` (auto)
-   - Custom: `scanner.yourdomain.com` (paid domain)
+# Drag 'dist' folder to: https://app.netlify.com/drop
+```
 
-### Add Analytics (Optional):
-1. In Netlify dashboard: Analytics → Enable
-2. Track visitors, conversions, etc.
+## 🌐 Custom Domain
 
-## Your Deployment Info
+1. Go to Site Settings → Domain Management
+2. Click "Add custom domain"
+3. Follow DNS configuration instructions
+4. SSL auto-configured
 
-**After deploying, you'll get:**
-- 🌐 Live URL: `https://your-site.netlify.app`
-- 🔒 SSL/HTTPS: Automatic (free)
-- ⚡ CDN: Automatic (fast worldwide)
-- 📊 Analytics: Optional (free)
+## 🔐 Supabase Configuration
 
-## Payment Processing (Next Phase)
+### Auth Settings
+Go to Supabase Dashboard → Authentication → Settings:
 
-To accept payments, you need:
-1. **Stripe** (recommended)
-   - Sign up at stripe.com
-   - Get publishable key & price ID
-   - Update `initializePayment()` function
+```
+Site URL: https://YOUR_DOMAIN.com
+Redirect URLs:
+  - https://YOUR_DOMAIN.com/**
+  - http://localhost:5173/**
 
-2. **Alternative**: Paddle, Gumroad, or Lemonsqueezy
+Email Confirmation: Disabled (for faster onboarding)
+```
 
-## Troubleshooting
+## 💳 Payment Integration (Optional)
 
-**White screen?**
-- Check browser console (F12)
-- Verify netlify.toml is present
-- Hard refresh (Ctrl+Shift+R)
+### Stripe Setup
 
-**API not working?**
-- Polygon.io API key must be valid
-- Check subscription status at polygon.io/dashboard
-- See console errors (F12)
+1. Create account at [stripe.com](https://stripe.com)
+2. Create products:
+   - Monthly: $29/month
+   - Yearly: $299/year
+3. Generate Payment Links
+4. Update upgrade buttons in:
+   - `src/pages/Dashboard.tsx`
+   - `src/pages/Settings.tsx`
 
-**Custom domain not working?**
-- Update DNS records as shown in Netlify
-- Can take 24-48 hours to propagate
+## 🐛 Troubleshooting
 
----
+**Build Fails**
+```bash
+rm -rf node_modules dist
+npm install
+npm run build
+```
 
-**Ready to go live?** Choose METHOD A (Drag & Drop) - it's the fastest!
+**404 on Refresh**
+- Already fixed via `netlify.toml` redirects
 
+**Auth Issues**
+- Check Supabase environment variables
+- Verify Site URL matches your domain
+
+**Scanner No Results**
+- User must add Polygon.io API key in Settings
+- Check Edge Function logs in Supabase
+
+## ✅ Post-Deployment Checklist
+
+- [ ] Site loads at production URL
+- [ ] HTTPS working
+- [ ] User registration works
+- [ ] Login/logout works
+- [ ] Scanner returns results
+- [ ] Scan history saves
+- [ ] Watchlist functions
+- [ ] Settings save properly
+- [ ] Mobile responsive
+
+## 🎉 You're Live!
+
+Your A+ Scanner Pro v2.0 is now deployed with:
+- User authentication
+- Database persistence
+- Real-time stock scanning
+- Freemium monetization ready
+
+**Questions?** See README.md for full documentation.
